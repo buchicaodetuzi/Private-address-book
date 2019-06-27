@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.zdxh.mtkj.dataobject.mapper.PersonMapper">
+
+    <resultMap id="BaseResultMap" type="cn.zdxh.mtkj.dataobject.Person">
+        <id column="per_id" property="per_id" jdbcType="INTEGER"/>
+        <id column="per_name" property="per_name" jdbcType="VARCHAR"/>
+        <id column="per_sex" property="per_sex" jdbcType="CHAR"/>
+        <id column="per_qq" property="per_qq" jdbcType="VARCHAR"/>
+        <id column="per_email" property="per_email" jdbcType="VARCHAR"/>
+        <id column="per_address" property="per_address" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="selectPersonById" resultType="cn.zdxh.mtkj.dataobject.Person" parameterType="java.lang.Integer">
+        select *
+        from person
+        where per_id = #{personId}
+    </select>
+
+    <select id="selectPhoneListByPersonId" resultType="java.lang.String" parameterType="java.lang.Integer">
+        SELECT
+	          ph_num
+        FROM
+	          phone
+        WHERE
+	    ph_id IN (
+		SELECT
+			phone_id
+		FROM
+			person_phone
+		WHERE
+			person_id = #{personId})
+    </select>
+
+    <select id="selectPersonByPersonName" resultType="cn.zdxh.mtkj.dataobject.Person" parameterType="java.lang.String">
+        select *
+        from person
+        where per_name = #{personName}
+    </select>
+
+    <select id="selectAll" resultType="cn.zdxh.mtkj.dataobject.Person">
+        select *
+        from person
+    </select>
+
+    <insert id="insertPerson"
+            parameterType="cn.zdxh.mtkj.dataobject.Person">
+        INSERT INTO person (per_name,per_sex,per_email,per_address)
+        VALUES(#{per_name},#{per_sex},#{per_email},#{per_address})
+    </insert>
+
+    <update id="updatePerson" parameterType="cn.zdxh.mtkj.dataobject.Person">
+        UPDATE person
+        SET per_name=#{per_name},per_sex=#{per_sex},per_email=#{per_email},per_address=#{per_address}
+        WHERE per_id=#{per_id};
+    </update>
+
+    <delete id="deletePersonByper_id" parameterType="java.lang.Integer">
+        delete
+        from person
+        where per_id = #{per_id}
+    </delete>
+</mapper>
